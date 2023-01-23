@@ -188,6 +188,7 @@ class MiscToolbar(AbstractToolbar):
         template = self.main.toolbars.misc.save_template_lineedit.text()
 
         props = self.main.current_output.props
+        props = {k: v.decode("utf-8") if isinstance(v, bytes) else v for k,v in dict(props).items()}
 
         heuristics = video_heuristics(self.main.current_output.source.clip, props)
 
