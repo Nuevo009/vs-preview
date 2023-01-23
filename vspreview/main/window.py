@@ -59,7 +59,6 @@ class MainWindow(AbstractMainWindow):
     BREAKING_CHANGES_VERSIONS = list[float]()
 
     # status bar
-    STATUS_FRAME_PROP = lambda prop: 'Type: %s' % (prop['_PictType'].decode('utf-8') if '_PictType' in prop else '?')
     STATUS_TEXT_FUNC_NAME = 'vsp_text'
 
     EVENT_POLICY = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -80,6 +79,11 @@ class MainWindow(AbstractMainWindow):
     reload_after_signal = pyqtSignal()
     toolbars: Toolbars
 
+    def status_props(props: dict) -> str:
+        if 'prop' in props:
+            prop = props['prop'].decode('utf-8')
+            return f"{prop}: {props[f'{prop}']}"
+        else: return 'Type: %s' % props['_PictType'].decode('utf-8') if '_PictType' in props else '?'
     def __init__(self, config_dir: Path) -> None:
         super().__init__()
 
@@ -531,7 +535,7 @@ class MainWindow(AbstractMainWindow):
             else:
                 text = repr(func)
         if text == '':
-            text = MainWindow.STATUS_FRAME_PROP(self.current_output.props)
+            text = MainWindow.status_props(self.current_output.props)
         self.statusbar.frame_props_label.setText(text)
 
     def switch_output(self, value: int | VideoOutput) -> None:
